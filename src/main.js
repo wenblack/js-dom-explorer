@@ -9,6 +9,8 @@ function setColorByType(type) {
   const colors = {
     visa: ['#2D57F2', '#436D99'],
     mastercard: ['#DF6F29', '#C69347'],
+    elo: ['#44AAE8', '#EED228'],
+    american_express: ['hsl(208, 100%, 41%)', 'hsl(208, 100%, 30%)'],
     default: ['black', 'gray']
   }
 
