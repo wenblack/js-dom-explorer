@@ -2,19 +2,26 @@
 import "./css/index.css"
 import IMask from "imask"
 
-//card variables
+//DOM Elements
 const ccBgColor01 = document.querySelector('.cc-bg svg>g  g:nth-child(1) path')
 const ccBgColor02 = document.querySelector('.cc-bg svg>g  g:nth-child(2) path')
+
 const ccLogo = document.querySelector('.cc-logo span:nth-child(2) img')
-let card
 
-//CVC Pattern
 const cvc = document.querySelector('#security-code');
-const cvcPattern = { mask: "0000" }
-const cvcMasked = IMask(cvc, cvcPattern);
-
-//Card number pattern
 const cardNumber = document.querySelector('#card-number');
+const expirationDate = document.querySelector('#expiration-date');
+
+const ccSecurity = document.querySelector('.cc-security .value');
+const ccHolder = document.querySelector('.cc-holder .value')
+const ccNumber = document.querySelector('.cc-number')
+const ccExpiration = document.querySelector('.cc-expiration .value')
+const cardHolder = document.querySelector('#card-holder')
+
+const addButton = document.querySelector('#button')
+
+//Patterns
+const cvcPattern = { mask: "0000" }
 const cardNumberPattern = {
   mask: [
     {
@@ -48,10 +55,6 @@ const cardNumberPattern = {
     return foundMask
   }
 }
-const cardNumberMasked = IMask(cardNumber, cardNumberPattern);
-
-//Expiration pattern
-const expirationDate = document.querySelector('#expiration-date');
 const expirationDatePattern = {
   mask: 'mm{/}yy',
   blocks: {
@@ -67,6 +70,11 @@ const expirationDatePattern = {
     }
   }
 }
+
+
+//Masks
+const cvcMasked = IMask(cvc, cvcPattern);
+const cardNumberMasked = IMask(cardNumber, cardNumberPattern);
 const expirationDateMasked = IMask(expirationDate, expirationDatePattern);
 
 //Functions
@@ -83,9 +91,39 @@ function setColorByType(type) {
   ccBgColor02.setAttribute('fill', colors[type][1])
   ccLogo.setAttribute('src', `cc-${type}.svg`)
 }
+function updateCvc(code) {
+  ccSecurity.innerText = code.length === 0 ? "123" : code
+}
+function updateCardNumber(number) {
+  ccNumber.innerText = number.length === 0 ? "1234 5678 9012 3456" : number
+}
+function updateExpirationDate(date) {
+  ccExpiration.innerText = date.length === 0 ? "02/32" : date
+}
 
-//Export global functions
+
+
+//Events
+document.querySelector('form').addEventListener('submit', (event) => {
+  event.preventDefault()
+})
+addButton.addEventListener('click', () => {
+  alert('Cartão adicionado!')
+})
+cardHolder.addEventListener('input', () => {
+  ccHolder.innerText = cardHolder.value.length === 0 ? "FULANO DA SILVA" : cardHolder.value
+})
+cvcMasked.on('accept', () => {
+  updateCvc(cvcMasked.value)
+})
+cardNumberMasked.on('accept', () => {
+  const card = cardNumberMasked.masked.currentMask.cardtype
+  setColorByType(card)
+  updateCardNumber(cardNumberMasked.value)
+})
+expirationDateMasked.on('accept', () => {
+  updateExpirationDate(expirationDateMasked.value)
+})
+
+
 globalThis.setColorByType = setColorByType
-
-
-
